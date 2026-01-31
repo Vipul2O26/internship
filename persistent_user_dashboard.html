@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Persistent User Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+  <p id="error_message" class="text-danger text-center"></p>
+
+  <div class="container py-4">
+
+    <h3 class="text-center mb-3">Users fetched from LocalStorage</h3>
+
+
+
+    <!-- Spinner -->
+    <div id="spinner" class="text-center my-3 d-none">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- User Table -->
+    <div class="table-responsive">
+      <div id="userdisplay" class="text-center text-danger"></div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-flex flex-column flex-md-row justify-content-starrt gap-3 mb-3">
+
+      <button id="fetchData" onclick="fetchData()" class="btn btn-dark">
+        Fetch Data
+      </button>
+
+      <button id="clearuser" onclick="clearuser()" class="btn btn-danger">
+        Clear All User
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+    const users = [
+      { id: 101, name: "vipul", age: 22, email: "vipulsodhaparmar@gmail.com" },
+      { id: 102, name: "sam", age: 15, email: "sam@gmail.com" },
+      { id: 103, name: "jhon", age: 20, email: "jhon@gmail.com" },
+      { id: 104, name: "peter", age: 25, email: "peter12@gmail.com" },
+      { id: 105, name: "snow", age: 29, email: "snow123@gmail.com" },
+    ];
+
+    const str_user = JSON.stringify(users);
+
+    function fetchData() {
+      document.getElementById("spinner").classList.remove("d-none");
+      document.getElementById("fetchData").disabled = true;
+
+      setTimeout(() => {
+        localStorage.setItem("alluser", str_user);
+        location.reload();
+      }, 800);
+    }
+
+    let txt = localStorage.getItem("alluser");
+    let newuser = JSON.parse(txt);
+
+    if (newuser == null) {
+      userdisplay.innerHTML = "No user available";
+    }
+    else {
+      let text = `
+<table class="table table-bordered">
+<tr class="table-dark">
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Email</th>
+</tr>
+`;
+
+      newuser.forEach(ele => {
+        text += `
+<tr>
+<td>${ele.id}</td>
+<td>${ele.name}</td>
+<td>${ele.age}</td>
+<td>${ele.email}</td>
+</tr>
+`;
+      });
+
+      text += "</table>";
+      userdisplay.innerHTML = text;
+    }
+
+    try {
+      console.log("Users displayed");
+    }
+    catch (error) {
+      error_message.innerHTML = error.message;
+    }
+
+    function clearuser() {
+      if (confirm("Clear all users?")) {
+        localStorage.removeItem("alluser");
+        location.reload();
+      }
+    }
+  </script>
+
+</body>
+
+</html>
